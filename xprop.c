@@ -55,7 +55,7 @@ from The Open Group.
 
 #include "dsimple.h"
 
-#define MAXSTR 10000
+#define MAXSTR 500000
 #define MAXELEMENTS 64
 
 #ifndef min
@@ -671,11 +671,12 @@ static int _buf_len;
 static void
 _put_char (char c)
 {
-    if (--_buf_len < 0) {
+    if (_buf_len <= 0) {
 	_buf_ptr[0] = '\0';
 	return;
     }
     _buf_ptr++[0] = c;
+    _buf_len--;
 }
 
 static void
