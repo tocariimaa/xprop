@@ -21,8 +21,8 @@
 
 bin_PROGRAMS = xprop
 
-xprop_CFLAGS = $(DEP_CFLAGS)
-xprop_LDADD = $(DEP_LIBS)
+xprop_CFLAGS = $(XPROP_CFLAGS)
+xprop_LDADD = $(XPROP_LIBS)
 
 xprop_SOURCES =	\
         dsimple.c \
