@@ -29,6 +29,6 @@ xprop_SOURCES =	\
         dsimple.h \
         xprop.c
 
-dist_man_MANS = \
+dist_man1_MANS = \
         xprop.man
 
