@@ -1200,10 +1200,6 @@ Get_Window_Property_Data_And_Type (Atom atom,
     else if (actual_format == 8)
 	nbytes = 1;
     else if (actual_format == 0)
-    /*
-     * Some broken implementations can return zero, despite what the
-     * XGetWindowProperty manual page says.
-     */
         nbytes = 0;
     else
 	abort();
