@@ -583,21 +583,21 @@ static char _formatting_buffer2[21];
 static const char *
 Format_Hex (long wrd)
 {
-    sprintf(_formatting_buffer2, "0x%lx", wrd);
+    snprintf(_formatting_buffer2, sizeof(_formatting_buffer2), "0x%lx", wrd);
     return _formatting_buffer2;
 }
 
 static const char *
 Format_Unsigned (long wrd)
 {
-    sprintf(_formatting_buffer2, "%lu", wrd);
+    snprintf(_formatting_buffer2, sizeof(_formatting_buffer2), "%lu", wrd);
     return _formatting_buffer2;
 }
 
 static const char *
 Format_Signed (long wrd)
 {
-    sprintf(_formatting_buffer2, "%ld", wrd);
+    snprintf(_formatting_buffer2, sizeof(_formatting_buffer2), "%ld", wrd);
     return _formatting_buffer2;
 }
 
@@ -622,7 +622,8 @@ Format_Atom (Atom atom)
     name = XGetAtomName(dpy, atom);
     XSetErrorHandler(handler);
     if (! name)
-	sprintf(_formatting_buffer, "undefined atom # 0x%lx", atom);
+	snprintf(_formatting_buffer, sizeof(_formatting_buffer),
+		 "undefined atom # 0x%lx", atom);
     else {
 	int namelen = strlen(name);
 	if (namelen > MAXSTR) namelen = MAXSTR;
@@ -696,7 +697,7 @@ _format_char (char c)
       default:
 	if (!c_isprint(c)) {
 	    _put_char('\\');
-	    sprintf(_buf_ptr, "%03o", (unsigned char) c);
+	    snprintf(_buf_ptr, _buf_len, "%03o", (unsigned char) c);
 	    _buf_ptr += 3;
 	    _buf_len -= 3;
 	} else
@@ -770,7 +771,7 @@ Format_Len_Text (const char *string, int len, Atom encoding)
 		    len -= n;
 		} else {
 		    _put_char('\\');
-		    sprintf(_buf_ptr, "%03o", (unsigned char) *string);
+		    snprintf(_buf_ptr, _buf_len, "%03o", (unsigned char) *string);
 		    _buf_ptr += 3;
 		    _buf_len -= 3;
 		    string++;
@@ -779,7 +780,7 @@ Format_Len_Text (const char *string, int len, Atom encoding)
 	    }
 	    count--;
 	    if (count > 0) {
-		sprintf(_buf_ptr, "\\000");
+		snprintf(_buf_ptr, _buf_len, "\\000");
 	        _buf_ptr += 4;
 		_buf_len -= 4;
 	    }
