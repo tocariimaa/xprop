@@ -1515,33 +1515,29 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 void
 usage (void)
 {
-    char **cpp;
-    static char *help_message[] = {
-"where options include:",
-"    -grammar                       print out full grammar for command line",
-"    -display host:dpy              the X server to contact",
-"    -id id                         resource id of window to examine",
-"    -name name                     name of window to examine",
-"    -font name                     name of font to examine",
-"    -remove propname               remove a property",
-"    -set propname value            set a property to a given value",
-"    -root                          examine the root window",
-"    -len n                         display at most n bytes of any property",
-"    -notype                        do not display the type field",
-"    -fs filename                   where to look for formats for properties",
-"    -frame                         don't ignore window manager frames",
-"    -f propname format [dformat]   formats to use for property of given name",
-"    -spy                           examine window properties forever",
-NULL};
+    static const char help_message[] = 
+"where options include:\n"
+"    -grammar                       print out full grammar for command line\n"
+"    -display host:dpy              the X server to contact\n"
+"    -id id                         resource id of window to examine\n"
+"    -name name                     name of window to examine\n"
+"    -font name                     name of font to examine\n"
+"    -remove propname               remove a property\n"
+"    -set propname value            set a property to a given value\n"
+"    -root                          examine the root window\n"
+"    -len n                         display at most n bytes of any property\n"
+"    -notype                        do not display the type field\n"
+"    -fs filename                   where to look for formats for properties\n"
+"    -frame                         don't ignore window manager frames\n"
+"    -f propname format [dformat]   formats to use for property of given name\n"
+"    -spy                           examine window properties forever\n";
+
 
     fflush (stdout);
     fprintf (stderr,
 	     "usage:  %s [-options ...] [[format [dformat]] atom] ...\n\n", 
 	     program_name);
-    for (cpp = help_message; *cpp; cpp++) {
-	fprintf (stderr, "%s\n", *cpp);
-    }
-    fprintf (stderr, "\n");
+    fprintf (stderr, "%s\n", help_message);
     exit (1);
 }
 
