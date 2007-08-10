@@ -60,10 +60,10 @@ extern int screen;                           /* The current screen */
 
 char *Malloc(unsigned);
 char *Get_Display_Name(int *, char **);
-Display *Open_Display(char *);
+Display *Open_Display(const char *);
 void Setup_Display_And_Screen(int *, char **);
 void Close_Display(void);
-XFontStruct *Open_Font(char *);
+XFontStruct *Open_Font(const char *);
 Window Select_Window_Args(int *, char **);
 void usage(void);
 
@@ -79,7 +79,7 @@ void usage(void);
  */
 
 Window Select_Window(Display *);
-Window Window_With_Name(Display *, Window, char *);
+Window Window_With_Name(Display *, Window, const char *);
 #ifdef __GNUC__
 void Fatal_Error(char *, ...) __attribute__((__noreturn__));
 #else
