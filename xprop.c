@@ -29,6 +29,7 @@ from The Open Group.
 */
 /* $XFree86: xc/programs/xprop/xprop.c,v 1.15 2003/09/24 02:43:38 dawes Exp $ */
 
+#include "config.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
@@ -37,15 +38,15 @@ from The Open Group.
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#ifdef HAS_WCHAR_H
+#ifdef HAVE_WCHAR_H
 #include <wchar.h>
 #endif
-#ifdef HAS_WCTYPE_H
+#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
 #endif
 #include <locale.h>
 
-#ifndef HAS_WCTYPE_H
+#ifndef HAVE_WCTYPE_H
 #define iswprint(x) isprint(x)
 #endif
 
