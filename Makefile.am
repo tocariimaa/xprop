@@ -21,7 +21,7 @@
 
 bin_PROGRAMS = xprop
 
-xprop_CFLAGS = $(XPROP_CFLAGS)
+AM_CFLAGS = $(XPROP_CFLAGS)
 xprop_LDADD = $(XPROP_LIBS)
 
 xprop_SOURCES =	\
