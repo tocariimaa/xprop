@@ -1287,13 +1287,13 @@ Handle_Prop_Requests (int argc, char **argv)
     char *format, *dformat, *prop;
     thunk *thunks, t;
 
-    thunks = Create_Thunk_List();
-
     /* if no prop referenced, by default list all properties for given window */
     if (!argc) {
 	Show_All_Props();
 	return NULL;
     }
+
+    thunks = Create_Thunk_List();
 
     while (argc > 0) {
 	format = NULL;
