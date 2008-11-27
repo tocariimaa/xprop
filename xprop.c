@@ -1740,6 +1740,7 @@ main (int argc, char **argv)
 	
 	XSelectInput(dpy, target_win, PropertyChangeMask);
 	for (;;) {
+	    fflush(stdout);
 	    XNextEvent(dpy, &event);
 	    format = dformat = NULL;
 	    if (props) {
