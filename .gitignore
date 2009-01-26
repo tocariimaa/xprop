@@ -18,3 +18,7 @@ stamp-h1
 xprop
 xprop.1
 *~
+*.o
+xprop-*.tar.*
+ChangeLog
+tags
