@@ -1596,6 +1596,22 @@ Parse_Format_Mapping (int *argc, char ***argv)
 
 static int spy = 0;
 
+static int (*old_error_handler)(Display *dpy, XErrorEvent *ev);
+
+static int spy_error_handler(Display *dpy, XErrorEvent *ev)
+{
+    if (ev->error_code == BadWindow || ev->error_code == BadMatch) {
+	/* Window was destroyed */
+	puts("");
+	exit(0);
+    }
+
+    if (old_error_handler)
+	return old_error_handler(dpy, ev);
+
+    return 0;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1738,10 +1754,15 @@ main (int argc, char **argv)
 	XEvent event;
 	const char *format, *dformat;
 	
-	XSelectInput(dpy, target_win, PropertyChangeMask);
+	XSelectInput(dpy, target_win, PropertyChangeMask | StructureNotifyMask);
+ 	old_error_handler = XSetErrorHandler(spy_error_handler);
 	for (;;) {
 	    fflush(stdout);
 	    XNextEvent(dpy, &event);
+ 	    if (event.type == DestroyNotify)
+ 		break;
+ 	    if (event.type != PropertyNotify)
+ 		continue;
 	    format = dformat = NULL;
 	    if (props) {
 		int i;
