@@ -355,7 +355,7 @@ typedef struct _propertyRec {
 "?m3(\t\twindow id # to use for icon: $4\n)"\
 "?m4(\t\tstarting position for icon: $5, $6\n)"\
 "?m6(\t\twindow id # of group leader: $8\n)"\
-"?m8(\t\tThe visible hint bit is set\n)"
+"?m8(\t\tThe urgency hint bit is set\n)"
 
 #define WM_ICON_SIZE_DFORMAT	":\n"\
 "\t\tminimum icon size: $0 by $1\n"\
