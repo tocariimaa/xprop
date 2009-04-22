@@ -36,7 +36,7 @@ AC_PROG_INSTALL
 
 XORG_CWARNFLAGS
 
-AC_CHECK_HEADERS([wchar.h wctype.h])
+AC_CHECK_HEADERS([wchar.h wctype.h langinfo.h])
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XPROP, x11)

@@ -45,6 +45,9 @@ from The Open Group.
 #include <wctype.h>
 #endif
 #include <locale.h>
+#ifdef HAVE_LANGINFO_H
+#include <langinfo.h>
+#endif
 
 #ifndef HAVE_WCTYPE_H
 #define iswprint(x) isprint(x)
@@ -416,6 +419,7 @@ static propertyRec windowPropTable[] = {
     {"WM_NAME",		XA_WM_NAME,	 "8t",	      0 },
     {"WM_PROTOCOLS",		0,	 "32a",	      ": protocols  $0+\n"},
     {"WM_SIZE_HINTS",	XA_WM_SIZE_HINTS,"32mii",     WM_SIZE_HINTS_DFORMAT },
+    {"_NET_WM_ICON",            0,       "32o",        0 },
     {"WM_STATE",		0,	 "32cx",      WM_STATE_DFORMAT}
 };
 #undef ARC_DFORMAT
@@ -740,6 +744,113 @@ Format_Len_String (const char *string, int len)
     return result;
 }  
 
+static int
+is_utf8_locale (void)
+{
+#ifdef HAVE_LANGINFO_H
+    char *charmap = nl_langinfo (CODESET);
+
+    return charmap && strcmp (charmap, "UTF-8") == 0;
+#else
+    return 0;
+#endif
+}
+
+static const char *
+Format_Icons (const unsigned long *icon, int len)
+{
+    char *result = NULL, *tail = NULL;
+    int alloced;
+    const unsigned long *end = icon + len / sizeof (unsigned long);
+
+    alloced = 0;
+
+    while (icon < end)
+    {
+	unsigned long width, height;
+	int w, h;
+	int offset;
+	
+	width = *icon++;
+	height = *icon++;
+
+	offset = (tail - result);
+	
+	alloced += 80;				/* For the header */
+	alloced += (width*4 + 8) * height;	/* For the rows (plus padding) */
+	
+	result = Realloc (result, alloced);
+	tail = &result[offset];
+
+	if (end - icon < width * height)
+	    break;
+
+	tail += sprintf (tail, "\tIcon (%lu x %lu):\n", width, height);
+
+	if (width > 144 || height > 144)
+	{
+	    tail += sprintf (tail, "\t(not shown)");
+	    icon += width * height;
+	    continue;
+	}
+	
+	for (h = 0; h < height; ++h)
+	{
+	    tail += sprintf (tail, "\t");
+	    
+	    for (w = 0; w < width; ++w)
+	    {
+		unsigned char a, r, g, b;
+		unsigned long pixel = *icon++;
+		unsigned long brightness;
+		
+		a = (pixel & 0xff000000) >> 24;
+		r = (pixel & 0x00ff0000) >> 16;
+		g = (pixel & 0x0000ff00) >> 8;
+		b = (pixel & 0x000000ff);
+		
+		brightness =
+		    (a / 255.0) * (1000 - ((299 * (r / 255.0)) +
+					   (587 * (g / 255.0)) +
+					   (114 * (b / 255.0))));
+
+		if (is_utf8_locale())
+		{
+		    static const char palette[][4] =
+		    {
+			" ",
+			"\342\226\221",		/* 25% */
+			"\342\226\222",		/* 50% */
+			"\342\226\223",		/* 75% */
+			"\342\226\210",		/* 100% */
+		    };
+		    int idx;
+
+		    idx = (brightness * ((sizeof (palette)/sizeof(palette[0])) - 1)) / 1000;
+
+		    tail += sprintf (tail, "%s", palette[idx]);
+		}
+		else
+		{
+		    static const char palette[] =
+			" .'`,^:\";~-_+<>i!lI?/\\|()1{}[]rcvunxzjftLCJUYXZO0Qoahkbdpqwm*WMB8&%$#@";
+		    int idx;
+		    
+		    idx = (brightness * (sizeof(palette) - 2)) / 1000;
+		    
+		    *tail++ = palette[idx];
+		}
+	    }
+
+	    tail += sprintf (tail, "\n");
+	}
+
+	tail += sprintf (tail, "\n");
+    }
+
+    return result;
+}
+
 static const char *
 Format_Len_Text (const char *string, int len, Atom encoding)
 {
@@ -859,6 +970,8 @@ Format_Thunk (thunk t, char format_char)
 	return Format_Mask_Word(value);
       case 'a':
 	return Format_Atom(value);
+      case 'o':
+	  return Format_Icons((const unsigned long *)t.extra_value, (int)t.value);
       default:
 	Fatal_Error("bad format character: %c", format_char);
     }
@@ -1112,6 +1225,20 @@ Extract_Len_String (const char **pointer, int *length, int size, const char **st
     return len;
 }
 
+static long
+Extract_Icon (const char **pointer, int *length, int size, const char **icon)
+{
+    int len = 0;
+
+    if (size != 32)
+	Fatal_Error("can't use format character 'o' with any size except 32.");
+
+    len = *length;
+    *icon = *pointer;
+    *length = 0;
+    return len;
+}
+
 static thunk *
 Break_Down_Property (const char *pointer, int length, Atom type, const char *format, int size)
 {
@@ -1130,7 +1257,10 @@ Break_Down_Property (const char *pointer, int length, Atom type, const char *for
 	else if (format_char == 't') {
 	    t.extra_encoding = type;
 	    t.value = Extract_Len_String(&pointer,&length,size,&t.extra_value);
-	} else
+	}
+	else if (format_char == 'o')
+	    t.value = Extract_Icon (&pointer,&length,size,&t.extra_value);
+	else
 	    t.value = Extract_Value(&pointer,&length,size,format_char=='i');
 	thunks = Add_Thunk(thunks, t);
 	i++;
