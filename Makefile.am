@@ -21,7 +21,7 @@
 
 bin_PROGRAMS = xprop
 
-AM_CFLAGS = $(XPROP_CFLAGS)
+AM_CFLAGS = $(CWARNFLAGS) $(XPROP_CFLAGS)
 xprop_LDADD = $(XPROP_LIBS)
 
 xprop_SOURCES =	\
@@ -72,7 +72,7 @@ MAN_SUBSTS = \
 SUFFIXES = .$(APP_MAN_SUFFIX) .man
 
 .man.$(APP_MAN_SUFFIX):
-	sed $(MAN_SUBSTS) < $< > $@
+	$(AM_V_GEN)$(SED) $(MAN_SUBSTS) < $< > $@
 
 if LINT
 ALL_LINT_FLAGS=$(LINT_FLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
