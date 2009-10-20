@@ -234,6 +234,14 @@ usable with a field size of 8. The string is assumed to be in an ICCCM
 compliant encoding and is converted to the current locale encoding before
 being output.
 .TP
+u
+This field and the next ones until either a 0 or the end of the property
+represent an UTF-8 encoded unicode string. This format character is only
+usable with a field size of 8. If the string is found to be an invalid
+character, the type of encoding violation is printed instead, followed by
+the string formatted using 's'. When in an environment not capable of
+displaying UTF-8 encoded string, behaviour is identical to 's'.
+.TP
 x
 The field is a hex number (like 'c' but displayed in hex - most useful
 for displaying window ids and the like)
