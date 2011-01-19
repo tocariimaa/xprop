@@ -41,4 +41,7 @@ PKG_CHECK_MODULES(XPROP, x11)
 
 XORG_WITH_LINT
 
-AC_OUTPUT([Makefile])
+AC_CONFIG_FILES([
+	Makefile
+	man/Makefile])
+AC_OUTPUT
