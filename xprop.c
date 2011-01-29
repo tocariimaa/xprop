@@ -124,22 +124,6 @@ Add_Thunk (thunk *list, thunk t)
  * Misc. routines
  */
 
-static char *
-Copy_String (const char *string)
-{
-    char *new;
-    int length;
-
-    length = strlen(string) + 1;
-
-    new = malloc(length);
-    if (!new)
-	Fatal_Error("Out of memory!");
-    memcpy(new, string, length);
-
-    return new;
-}
-
 static int
 Read_Char (FILE *stream)
 {
@@ -190,7 +174,10 @@ Read_Quoted (FILE *stream)
     }
     ptr++[0] = '\0';
 
-    return Copy_String(_large_buffer);
+    ptr = strdup(_large_buffer);
+    if (!ptr)
+	Fatal_Error("Out of memory!");
+    return ptr;
 }
 
 /*
@@ -559,7 +546,9 @@ Read_Mappings (FILE *stream)
 	    Fatal_Error("Bad format file format.");
 
 	atom = Parse_Atom(name, False);
-	format = Copy_String(format_buffer);
+	format = strdup(format_buffer);
+	if (!format)
+	    Fatal_Error("Out of memory!");
 
 	Read_White_Space(stream);
 	dformat = D_DFORMAT;
