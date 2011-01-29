@@ -37,7 +37,7 @@ XORG_DEFAULT_OPTIONS
 AC_CHECK_HEADERS([wchar.h wctype.h langinfo.h])
 
 # Checks for pkg-config packages
-PKG_CHECK_MODULES(XPROP, x11)
+PKG_CHECK_MODULES(XPROP, [x11 xproto >= 7.0.17])
 
 XORG_WITH_LINT
 
