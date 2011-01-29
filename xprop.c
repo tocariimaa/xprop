@@ -86,7 +86,9 @@ Create_Thunk_List (void)
 {
     thunk *tptr;
 
-    tptr = (thunk *) Malloc(sizeof(thunk));
+    tptr = malloc(sizeof(thunk));
+    if (!tptr)
+	Fatal_Error("Out of memory!");
 
     tptr->thunk_count = 0;
 
@@ -108,7 +110,7 @@ Add_Thunk (thunk *list, thunk t)
 
     i = list->thunk_count;
 
-    list = (thunk *) realloc(list, (i+1)*sizeof(thunk));
+    list = realloc(list, (i+1)*sizeof(thunk));
     if (!list)
 	Fatal_Error("Out of memory!");
 
@@ -130,7 +132,9 @@ Copy_String (const char *string)
 
     length = strlen(string) + 1;
 
-    new = (char *) Malloc(length);
+    new = malloc(length);
+    if (!new)
+	Fatal_Error("Out of memory!");
     memcpy(new, string, length);
 
     return new;
@@ -736,7 +740,9 @@ Format_Len_String (const char *string, int len)
     char *data;
     const char *result;
 
-    data = (char *) Malloc(len+1);
+    data = malloc(len+1);
+    if (!data)
+	Fatal_Error("Out of memory!");
 
     memcpy(data, string, len);
     data[len] = '\0';
@@ -782,7 +788,9 @@ Format_Icons (const unsigned long *icon, int len)
 	alloced += 80;				/* For the header */
 	alloced += (width*4 + 8) * height;	/* For the rows (plus padding) */
 	
-	result = Realloc (result, alloced);
+	result = realloc (result, alloced);
+	if (!result)
+	    Fatal_Error("Out of memory!");
 	tail = &result[offset];
 
 	if (end - icon < width * height)
@@ -1006,7 +1014,9 @@ Format_Len_Unicode (const char *string, int len)
 
 	result = Format_Len_String(string, len);
 	len2 = strlen(result);
-	data = (char *) Malloc(len2+1);
+	data = malloc(len2+1);
+	if (!data)
+	    Fatal_Error("Out of memory!");
 	memcpy(data, result, len2+1);
 
 	memcpy(_formatting_buffer, error, strlen(error)+1);
@@ -1019,7 +1029,9 @@ Format_Len_Unicode (const char *string, int len)
     if (!is_utf8_locale())
 	return Format_Len_String(string, len);
 
-    data = (char *) Malloc(len+1);
+    data = malloc(len+1);
+    if (!data)
+	Fatal_Error("Out of memory!");
 
     memcpy(data, string, len);
     data[len] = '\0';
