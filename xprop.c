@@ -999,6 +999,8 @@ Format_Len_Unicode (const char *string, int len)
 	    error = "<Invalid UTF-8 string: Tail too short> "; break;
 	  case UTF8_LONG_TAIL:
 	    error = "<Invalid UTF-8 string: Tail too long> "; break;
+	  default:
+	    error = "<Invalid UTF-8 string: Unknown error>"; break;
 	}
 
 	result = Format_Len_String(string, len);
