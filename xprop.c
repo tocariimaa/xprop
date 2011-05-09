@@ -287,7 +287,7 @@ Lookup_Formats (Atom atom, const char **format, const char **dformat)
 static void
 Add_Mapping (Atom atom, const char *format, const char *dformat)
 {
-    thunk t;
+    thunk t = {0};
 
     if (!_property_formats)
 	_property_formats = Create_Thunk_List();
@@ -935,7 +935,7 @@ Format_Len_Text (const char *string, int len, Atom encoding)
 static int
 is_valid_utf8 (const char *string, int len)
 {
-    unsigned long codepoint;
+    unsigned long codepoint = 0;
     int rem, i;
     unsigned char c;
 
@@ -1372,7 +1372,7 @@ static thunk *
 Break_Down_Property (const char *pointer, int length, Atom type, const char *format, int size)
 {
     thunk *thunks;
-    thunk t;
+    thunk t = {0};
     int i;
     char format_char;
 
@@ -1546,7 +1546,7 @@ static thunk *
 Handle_Prop_Requests (int argc, char **argv)
 {
     char *format, *dformat, *prop;
-    thunk *thunks, t;
+    thunk *thunks, t = {0};
 
     /* if no prop referenced, by default list all properties for given window */
     if (!argc) {
@@ -1945,7 +1945,7 @@ main (int argc, char **argv)
 	    continue;
 	}
 	if (!strcmp(argv[0], "-remove")) {
-	    thunk t;
+	    thunk t = {0};
 	    if (++argv, --argc == 0) usage();
 	    t.propname = argv[0];
 	    if (remove_props == NULL) remove_props = Create_Thunk_List();
@@ -1953,7 +1953,7 @@ main (int argc, char **argv)
 	    continue;
 	}
 	if (!strcmp(argv[0], "-set")) {
-	    thunk t;
+	    thunk t = {0};
 	    if (argc < 3) usage();
 	    t.propname = argv[1];
 	    t.extra_value = argv[2];
