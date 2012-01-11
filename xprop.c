@@ -1629,6 +1629,13 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	data = (unsigned char *) value;
 	nelements = strlen(value);
 	break;
+      case 'u':
+	if (size != 8)
+	    Fatal_Error("can't use format character 'u' with any size except 8.");
+	type = XInternAtom(dpy, "UTF8_STRING", False);
+	data = (unsigned char *) value;
+	nelements = strlen(value);
+	break;
       case 't': {
 	XTextProperty textprop;
 	if (size != 8)
