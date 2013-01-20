@@ -724,7 +724,7 @@ Format_String (const char *string, int unicode)
 }
 
 static const char *
-Format_Len_String (const char *string, int len)
+Format_Len_String (const char *string, int len, int unicode)
 {
     char *data;
     const char *result;
@@ -736,7 +736,7 @@ Format_Len_String (const char *string, int len)
     memcpy(data, string, len);
     data[len] = '\0';
 
-    result = Format_String(data, 0);
+    result = Format_String(data, unicode);
     free(data);
 
     return result;
@@ -901,7 +901,7 @@ Format_Len_Text (const char *string, int len, Atom encoding)
 	*_buf_ptr++ = '\0';
 	return _formatting_buffer;
     } else
-	return Format_Len_String(string, len);
+	return Format_Len_String(string, len, 0);
 }
 
 /*
@@ -1002,7 +1002,7 @@ Format_Len_Unicode (const char *string, int len)
 	    error = "<Invalid UTF-8 string: Unknown error>"; break;
 	}
 
-	result = Format_Len_String(string, len);
+	result = Format_Len_String(string, len, 0);
 	/* result is stored in _formatting_buffer, so make a temporary
 	   copy before we overwrite _formatting_buffer with error */
 	data = strdup(result);
@@ -1016,20 +1016,7 @@ Format_Len_Unicode (const char *string, int len)
 	return _formatting_buffer;
     }
 
-    if (!is_utf8_locale())
-	return Format_Len_String(string, len);
-
-    data = malloc(len+1);
-    if (!data)
-	Fatal_Error("Out of memory!");
-
-    memcpy(data, string, len);
-    data[len] = '\0';
-
-    result = Format_String(data, 1);
-    free(data);
-
-    return result;
+    return Format_Len_String(string, len, is_utf8_locale());
 }
 
 /*
@@ -1083,7 +1070,7 @@ Format_Thunk (thunk t, char format_char)
 
     switch (format_char) {
       case 's':
-	return Format_Len_String(t.extra_value, (int)t.value);
+	return Format_Len_String(t.extra_value, (int)t.value, 0);
       case 'u':
 	return Format_Len_Unicode(t.extra_value, (int)t.value);
       case 't':
