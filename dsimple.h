@@ -80,4 +80,4 @@ void usage(void);
 Window Select_Window(Display *, int descend);
 Window Window_With_Name(Display *, Window, const char *);
 
-void Fatal_Error(char *, ...) _X_NORETURN;
+void Fatal_Error(char *, ...) _X_NORETURN _X_ATTRIBUTE_PRINTF(1,2);
