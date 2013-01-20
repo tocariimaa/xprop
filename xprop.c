@@ -985,7 +985,6 @@ Format_Len_Unicode (const char *string, int len)
 {
     char *data;
     const char *result, *error;
-    int len2;
 
     int validity = is_valid_utf8(string, len);
 
@@ -1004,11 +1003,11 @@ Format_Len_Unicode (const char *string, int len)
 	}
 
 	result = Format_Len_String(string, len);
-	len2 = strlen(result);
-	data = malloc(len2+1);
+	/* result is stored in _formatting_buffer, so make a temporary
+	   copy before we overwrite _formatting_buffer with error */
+	data = strdup(result);
 	if (!data)
 	    Fatal_Error("Out of memory!");
-	memcpy(data, result, len2+1);
 
 	memcpy(_formatting_buffer, error, strlen(error)+1);
 	strcat(_formatting_buffer, data);
