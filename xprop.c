@@ -537,7 +537,8 @@ static void
 Read_Mappings (FILE *stream)
 {
     char format_buffer[100];
-    char name[1000], *dformat, *format;
+    char name[1000];
+    const char *dformat, *format;
     int count, c;
     Atom atom;
 
@@ -1594,7 +1595,7 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
     int size;
     char format_char;
     Atom type = 0;
-    unsigned char *data = NULL;
+    const unsigned char *data = NULL;
     int nelements = 0;
 
     atom = Parse_Atom(propname, False);
@@ -1612,14 +1613,14 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	if (size != 8)
 	    Fatal_Error("can't use format character 's' with any size except 8.");
 	type = XA_STRING;
-	data = (unsigned char *) value;
+	data = (const unsigned char *) value;
 	nelements = strlen(value);
 	break;
       case 'u':
 	if (size != 8)
 	    Fatal_Error("can't use format character 'u' with any size except 8.");
 	type = XInternAtom(dpy, "UTF8_STRING", False);
-	data = (unsigned char *) value;
+	data = (const unsigned char *) value;
 	nelements = strlen(value);
 	break;
       case 't': {
@@ -1648,11 +1649,11 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	intvalue = strtoul(tmp, NULL, 0);
 	switch(size) {
 	    case 8:
-	        data8[0] = intvalue; data = (unsigned char *) data8; break;
+	        data8[0] = intvalue; data = (const unsigned char *) data8; break;
 	    case 16:    
-	        data16[0] = intvalue; data = (unsigned char *) data16; break;
+	        data16[0] = intvalue; data = (const unsigned char *) data16; break;
 	    case 32:    
-	        data32[0] = intvalue; data = (unsigned char *) data32; break;
+	        data32[0] = intvalue; data = (const unsigned char *) data32; break;
 	}
 	tmp = strtok(NULL,",");
 	while(tmp != NULL){
@@ -1688,11 +1689,11 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	intvalue = strtoul(tmp, NULL, 0);
 	switch(size) {
 	    case 8:
-	        data8[0] = intvalue; data = (unsigned char *) data8; break;
+	        data8[0] = intvalue; data = (const unsigned char *) data8; break;
 	    case 16:    
-	        data16[0] = intvalue; data = (unsigned char *) data16; break;
+	        data16[0] = intvalue; data = (const unsigned char *) data16; break;
 	    case 32:    
-	        data32[0] = intvalue; data = (unsigned char *) data32; break;
+	        data32[0] = intvalue; data = (const unsigned char *) data32; break;
 	}
 	tmp = strtok(NULL,",");
 	while(tmp != NULL){
@@ -1733,11 +1734,11 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	type = XA_INTEGER;
 	switch (size) {
 	  case 8:
-	    data8 = boolvalue; data = (unsigned char *) &data8; break;
+	    data8 = boolvalue; data = (const unsigned char *) &data8; break;
 	  case 16:
-	    data16 = boolvalue; data = (unsigned char *) &data16; break;
+	    data16 = boolvalue; data = (const unsigned char *) &data16; break;
 	  case 32: default:
-	    data32 = boolvalue; data = (unsigned char *) &data32; break;
+	    data32 = boolvalue; data = (const unsigned char *) &data32; break;
 	}
 	nelements = 1;
 	break;
@@ -1746,7 +1747,7 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	static Atom avalue;
 	avalue = Parse_Atom(value, False);
 	type = XA_ATOM;
-	data = (unsigned char *) &avalue;
+	data = (const unsigned char *) &avalue;
 	nelements = 1;
 	break;
       }
