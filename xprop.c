@@ -1785,7 +1785,8 @@ usage (const char *errmsg)
 "    -fs filename                   where to look for formats for properties\n"
 "    -frame                         don't ignore window manager frames\n"
 "    -f propname format [dformat]   formats to use for property of given name\n"
-"    -spy                           examine window properties forever\n";
+"    -spy                           examine window properties forever\n"
+"    -version                       print program version\n";
 
 
     fflush (stdout);
@@ -1969,6 +1970,10 @@ main (int argc, char **argv)
 	if (!strcmp(argv[0], "-f") || !strcmp(argv[0], "-format")) {
 	    Parse_Format_Mapping(&argc, &argv);
 	    continue;
+	}
+	if (!strcmp(argv[0], "-version")) {
+	    puts(PACKAGE_STRING);
+	    exit(0);
 	}
 	fprintf (stderr, "%s: unrecognized argument %s\n\n",
 		 program_name, argv[0]);
