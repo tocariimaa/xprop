@@ -1423,9 +1423,15 @@ Get_Window_Property_Data_And_Type (Atom atom,
     unsigned long nitems;
     unsigned long nbytes;
     unsigned long bytes_after;
-    unsigned char *prop;
+    static unsigned char *prop = NULL;
     int status;
-	
+
+    if (prop)
+    {
+	XFree(prop);
+	prop = NULL;
+    }
+
     status = XGetWindowProperty(dpy, target_win, atom, 0, (max_len+3)/4,
 				False, AnyPropertyType, &actual_type,
 				&actual_format, &nitems, &bytes_after,
