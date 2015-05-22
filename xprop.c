@@ -95,14 +95,6 @@ Create_Thunk_List (void)
     return tptr;
 }
 
-#ifdef notused
-static void
-Free_Thunk_List (thunk *list)
-{
-    free(list);
-}
-#endif
-
 static thunk *
 Add_Thunk (thunk *list, thunk t)
 {
@@ -1506,8 +1498,8 @@ Show_Prop (const char *format, const char *dformat, const char *prop)
     }
 
     thunks = Break_Down_Property(data, (int)length, type, format, size);
-
     Display_Property(thunks, dformat, format);
+    free(thunks);
 }
 
 static void
