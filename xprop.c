@@ -1515,6 +1515,7 @@ Show_All_Props (void)
 	    name = Format_Atom(atoms[i]);
 	    Show_Prop(NULL, NULL, name);
 	}
+	XFree(atoms);
     } else
 	for (i = 0; i < font->n_properties; i++) {
 	    atom = font->properties[i].name;
