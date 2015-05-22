@@ -750,9 +750,13 @@ is_utf8_locale (void)
 static const char *
 Format_Icons (const unsigned long *icon, int len)
 {
-    char *result = NULL, *tail = NULL;
+    static char *result = NULL;
+    char *tail = NULL;
     int alloced;
     const unsigned long *end = icon + len / sizeof (unsigned long);
+
+    free(result);
+    result = NULL;
 
     alloced = 0;
 
