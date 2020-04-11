@@ -1772,10 +1772,11 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
  */
 
 void
-usage (const char *errmsg)
+print_help (void)
 {
     static const char *help_message =
 "where options include:\n"
+"    -help                          print out a summary of command line options\n"
 "    -grammar                       print out full grammar for command line\n"
 "    -display host:dpy              the X server to contact\n"
 "    -id id                         resource id of window to examine\n"
@@ -1795,13 +1796,24 @@ usage (const char *errmsg)
 
     fflush (stdout);
 
-    if (errmsg != NULL)
-	fprintf (stderr, "%s: %s\n\n", program_name, errmsg);
-
     fprintf (stderr,
 	     "usage:  %s [-options ...] [[format [dformat]] atom] ...\n\n", 
 	     program_name);
     fprintf (stderr, "%s\n", help_message);
+}
+
+void help (void) {
+	print_help();
+	exit(0);
+}
+
+void
+usage (const char *errmsg)
+{
+    if (errmsg != NULL)
+	fprintf (stderr, "%s: %s\n\n", program_name, errmsg);
+
+    print_help();
     exit (1);
 }
 
@@ -1918,6 +1930,10 @@ main (int argc, char **argv)
     while (argv++, --argc>0 && **argv == '-') {
 	if (!strcmp(argv[0], "-"))
 	    continue;
+	if (!strcmp(argv[0], "-help")) {
+	    help ();
+	    /* NOTREACHED */
+	}
 	if (!strcmp(argv[0], "-grammar")) {
 	    grammar ();
 	    /* NOTREACHED */
