@@ -767,16 +767,25 @@ Format_Icons (const unsigned long *icon, int len)
     while (icon < end)
     {
 	unsigned long width, height;
+	unsigned int icon_pixel_bytes;
+	unsigned int icon_line_bytes;
 	int w, h;
 	int offset;
 	
 	width = *icon++;
 	height = *icon++;
 
+	icon_pixel_bytes = 1;
+	if (is_utf8_locale())
+	    icon_pixel_bytes = 3; /* Up to 3 bytes per character in that mode. */
+
+	/* Initial tab, pixels, and newline. */
+	icon_line_bytes = 8 + width * icon_pixel_bytes + 1;
+
 	offset = (tail - result);
 	
 	alloced += 80;				/* For the header */
-	alloced += (width*4 + 8) * height;	/* For the rows (plus padding) */
+	alloced += icon_line_bytes * height;	/* For the rows */
 	
 	result = realloc (result, alloced);
 	if (!result)
