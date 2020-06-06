@@ -751,6 +751,17 @@ is_utf8_locale (void)
 #endif
 }
 
+static int
+is_truecolor_term (void)
+{
+    char *colorterm = getenv( "COLORTERM" );
+
+    if (colorterm && !strcmp(colorterm,"truecolor"))
+	return 1;
+
+    return 0;
+}
+
 static const char *
 Format_Icons (const unsigned long *icon, int len)
 {
@@ -779,13 +790,15 @@ Format_Icons (const unsigned long *icon, int len)
 	icon_pixel_bytes = 1;
 	if (is_utf8_locale())
 	    icon_pixel_bytes = 3; /* Up to 3 bytes per character in that mode. */
+	if (is_utf8_locale())
+	    icon_pixel_bytes = 25; /* 16 control characters, and up to 9 chars of RGB. */
 
 	/* Initial tab, pixels, and newline. */
 	icon_line_bytes = 8 + display_width * icon_pixel_bytes + 1;
 
 	offset = (tail - result);
 	
-	alloced += 80;				/* For the header */
+	alloced += 80;				/* For the header, final newline, color reset */
 	alloced += icon_line_bytes * height;	/* For the rows */
 	
 	result = realloc (result, alloced);
@@ -825,7 +838,17 @@ Format_Icons (const unsigned long *icon, int len)
 					   (587 * (g / 255.0)) +
 					   (114 * (b / 255.0))));
 
-		if (is_utf8_locale())
+		if (is_truecolor_term())
+		{
+		    float opacity = a / 255.0;
+
+		    r = r * opacity;
+		    g = g * opacity;
+		    b = b * opacity;
+
+		    tail += sprintf (tail, "\033[38;2;%d;%d;%dm\342\226\210\342\226\210", r, g, b );
+		}
+		else if (is_utf8_locale())
 		{
 		    static const char palette[][4] =
 		    {
@@ -856,6 +879,10 @@ Format_Icons (const unsigned long *icon, int len)
 
 	    tail += sprintf (tail, "\n");
 	}
+
+	/* Reset colors. */
+	if (is_truecolor_term())
+	    tail += sprintf (tail, "\033[0m");
 
 	tail += sprintf (tail, "\n");
     }
