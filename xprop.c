@@ -766,7 +766,7 @@ Format_Icons (const unsigned long *icon, int len)
 
     while (icon < end)
     {
-	unsigned long width, height;
+	unsigned long width, height, display_width;
 	unsigned int icon_pixel_bytes;
 	unsigned int icon_line_bytes;
 	int w, h;
@@ -774,13 +774,14 @@ Format_Icons (const unsigned long *icon, int len)
 	
 	width = *icon++;
 	height = *icon++;
+	display_width = width * 2; /* Two characters per icon pixel. */
 
 	icon_pixel_bytes = 1;
 	if (is_utf8_locale())
 	    icon_pixel_bytes = 3; /* Up to 3 bytes per character in that mode. */
 
 	/* Initial tab, pixels, and newline. */
-	icon_line_bytes = 8 + width * icon_pixel_bytes + 1;
+	icon_line_bytes = 8 + display_width * icon_pixel_bytes + 1;
 
 	offset = (tail - result);
 	
@@ -797,7 +798,7 @@ Format_Icons (const unsigned long *icon, int len)
 
 	tail += sprintf (tail, "\tIcon (%lu x %lu):\n", width, height);
 
-	if ((width + 8) > term_width || height > 144)
+	if ((display_width + 8) > term_width || height > 144)
 	{
 	    tail += sprintf (tail, "\t(not shown)");
 	    icon += width * height;
@@ -838,7 +839,7 @@ Format_Icons (const unsigned long *icon, int len)
 
 		    idx = (brightness * ((sizeof (palette)/sizeof(palette[0])) - 1)) / 1000;
 
-		    tail += sprintf (tail, "%s", palette[idx]);
+		    tail += sprintf (tail, "%s%s", palette[idx], palette[idx]);
 		}
 		else
 		{
@@ -848,6 +849,7 @@ Format_Icons (const unsigned long *icon, int len)
 		    
 		    idx = (brightness * (sizeof(palette) - 2)) / 1000;
 		    
+		    *tail++ = palette[idx];
 		    *tail++ = palette[idx];
 		}
 	    }
