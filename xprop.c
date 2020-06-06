@@ -33,6 +33,7 @@ from The Open Group.
 #include <X11/Xos.h>
 #include <X11/Xfuncs.h>
 #include <X11/Xutil.h>
+#include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -64,6 +65,8 @@ from The Open Group.
 
 /* isprint() in "C" locale */
 #define c_isprint(c) ((c) >= 0x20 && (c) < 0x7f)
+
+static int term_width = 80;
 
 /*
  *
@@ -785,7 +788,7 @@ Format_Icons (const unsigned long *icon, int len)
 
 	tail += sprintf (tail, "\tIcon (%lu x %lu):\n", width, height);
 
-	if (width > 144 || height > 144)
+	if ((width + 8) > term_width || height > 144)
 	{
 	    tail += sprintf (tail, "\t(not shown)");
 	    icon += width * height;
@@ -1899,6 +1902,15 @@ main (int argc, char **argv)
     Bool frame_only = False;
     int n;
     char **nargv;
+
+#ifdef TIOCGWINSZ
+    struct winsize ws;
+    ws.ws_col = 0;
+    ioctl(STDIN_FILENO, TIOCGWINSZ, &ws);
+
+    if (ws.ws_col != 0)
+	term_width = ws.ws_col;
+#endif
 
     INIT_NAME;
 
