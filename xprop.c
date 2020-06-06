@@ -813,7 +813,7 @@ Format_Icons (const unsigned long *icon, int len)
 
 	if ((display_width + 8) > term_width || height > 144)
 	{
-	    tail += sprintf (tail, "\t(not shown)");
+	    tail += sprintf (tail, "\t(not shown)\n");
 	    icon += width * height;
 	    continue;
 	}
