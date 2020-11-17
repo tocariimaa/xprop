@@ -66,7 +66,7 @@ from The Open Group.
 /* isprint() in "C" locale */
 #define c_isprint(c) ((c) >= 0x20 && (c) < 0x7f)
 
-static int term_width = 80;
+static int term_width = 144 + 8;
 
 /*
  *
