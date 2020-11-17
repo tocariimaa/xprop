@@ -894,7 +894,7 @@ static const char *
 Format_Len_Text (const char *string, int len, Atom encoding)
 {
     XTextProperty textprop;
-    char **list;
+    char **list, **start_list;
     int count;
 
     /* Try to convert to local encoding. */
@@ -902,7 +902,8 @@ Format_Len_Text (const char *string, int len, Atom encoding)
     textprop.format = 8;
     textprop.value = (unsigned char *) string;
     textprop.nitems = len;
-    if (XmbTextPropertyToTextList(dpy, &textprop, &list, &count) == Success) {
+    if (XmbTextPropertyToTextList(dpy, &textprop, &start_list, &count) == Success) {
+	list = start_list;
 	_buf_ptr = _formatting_buffer;
 	_buf_len = MAXSTR;
 	*_buf_ptr++ = '"';
@@ -936,6 +937,7 @@ Format_Len_Text (const char *string, int len, Atom encoding)
 		_buf_len -= 4;
 	    }
 	}
+	XFreeStringList(start_list);
 	*_buf_ptr++ = '"';
 	*_buf_ptr++ = '\0';
 	return _formatting_buffer;
