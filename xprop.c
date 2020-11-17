@@ -1946,9 +1946,7 @@ main (int argc, char **argv)
 #ifdef TIOCGWINSZ
     struct winsize ws;
     ws.ws_col = 0;
-    ioctl(STDIN_FILENO, TIOCGWINSZ, &ws);
-
-    if (ws.ws_col != 0)
+    if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ws) != -1 && ws.ws_col != 0)
 	term_width = ws.ws_col;
 #endif
 
