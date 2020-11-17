@@ -788,10 +788,10 @@ Format_Icons (const unsigned long *icon, int len)
 	display_width = width * 2; /* Two characters per icon pixel. */
 
 	icon_pixel_bytes = 1;
-	if (is_utf8_locale())
-	    icon_pixel_bytes = 3; /* Up to 3 bytes per character in that mode. */
-	if (is_utf8_locale())
+	if (is_truecolor_term())
 	    icon_pixel_bytes = 25; /* 16 control characters, and up to 9 chars of RGB. */
+	else if (is_utf8_locale())
+	    icon_pixel_bytes = 3; /* Up to 3 bytes per character in that mode. */
 
 	/* Initial tab, pixels, and newline. */
 	icon_line_bytes = 8 + display_width * icon_pixel_bytes + 1;
