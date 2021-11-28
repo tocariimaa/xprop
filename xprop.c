@@ -1890,7 +1890,7 @@ Parse_Format_Mapping (int *argc, char ***argv)
 #define ARGC (*argc)
 #define ARGV (*argv)
 #define OPTION ARGV[0]
-#define NXTOPT if (++ARGV, --ARGC==0) usage("insufficent arguments for -format")
+#define NXTOPT if (++ARGV, --ARGC==0) usage("insufficient arguments for -format")
     char *type_name, *format, *dformat;
   
     NXTOPT; type_name = OPTION;
@@ -2025,7 +2025,7 @@ main (int argc, char **argv)
 	}
 	if (!strcmp(argv[0], "-set")) {
 	    thunk t = {0};
-	    if (argc < 3) usage("insufficent arguments for -set");
+	    if (argc < 3) usage("insufficient arguments for -set");
 	    t.propname = argv[1];
 	    t.extra_value = argv[2];
 	    argv += 3; argc -= 3;
