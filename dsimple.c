@@ -247,19 +247,19 @@ Window Select_Window_Args(
  * Routine to let user select a window using the mouse
  */
 
-Window Select_Window(Display *dpy, int descend)
+Window Select_Window(Display *display, int descend)
 {
   int status;
   Cursor cursor;
   XEvent event;
-  Window target_win = None, root = RootWindow(dpy,screen);
+  Window target_win = None, root = RootWindow(display,screen);
   int buttons = 0;
 
   /* Make the target cursor */
-  cursor = XCreateFontCursor(dpy, XC_crosshair);
+  cursor = XCreateFontCursor(display, XC_crosshair);
 
   /* Grab the pointer using target cursor, letting it room all over */
-  status = XGrabPointer(dpy, root, False,
+  status = XGrabPointer(display, root, False,
 			ButtonPressMask|ButtonReleaseMask, GrabModeSync,
 			GrabModeAsync, root, cursor, CurrentTime);
   if (status != GrabSuccess) Fatal_Error("Can't grab the mouse.");
@@ -267,8 +267,8 @@ Window Select_Window(Display *dpy, int descend)
   /* Let the user select a window... */
   while ((target_win == None) || (buttons != 0)) {
     /* allow one more event */
-    XAllowEvents(dpy, SyncPointer, CurrentTime);
-    XWindowEvent(dpy, root, ButtonPressMask|ButtonReleaseMask, &event);
+    XAllowEvents(display, SyncPointer, CurrentTime);
+    XWindowEvent(display, root, ButtonPressMask|ButtonReleaseMask, &event);
     switch (event.type) {
     case ButtonPress:
       if (target_win == None) {
@@ -284,12 +284,12 @@ Window Select_Window(Display *dpy, int descend)
     }
   } 
 
-  XUngrabPointer(dpy, CurrentTime);      /* Done with pointer */
+  XUngrabPointer(display, CurrentTime);      /* Done with pointer */
 
   if (!descend || (target_win == root))
     return(target_win);
 
-  target_win = Find_Client(dpy, root, target_win);
+  target_win = Find_Client(display, root, target_win);
 
   return(target_win);
 }
@@ -303,7 +303,7 @@ Window Select_Window(Display *dpy, int descend)
  *                   are looked at.  Normally, top should be the RootWindow.
  */
 Window Window_With_Name(
-    Display *dpy,
+    Display *display,
     Window top,
     const char *name)
 {
@@ -313,14 +313,14 @@ Window Window_With_Name(
 	Window w=0;
 	char *window_name;
 
-	if (XFetchName(dpy, top, &window_name) && !strcmp(window_name, name))
+	if (XFetchName(display, top, &window_name) && !strcmp(window_name, name))
 	  return(top);
 
-	if (!XQueryTree(dpy, top, &dummy, &dummy, &children, &nchildren))
+	if (!XQueryTree(display, top, &dummy, &dummy, &children, &nchildren))
 	  return(0);
 
 	for (i=0; i<nchildren; i++) {
-		w = Window_With_Name(dpy, children[i], name);
+		w = Window_With_Name(display, children[i], name);
 		if (w)
 		  break;
 	}

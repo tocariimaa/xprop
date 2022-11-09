@@ -596,7 +596,7 @@ Format_Signed (long wrd)
 
 /*ARGSUSED*/
 static int
-ignore_errors (Display *dpy, XErrorEvent *ev)
+ignore_errors (Display *display, XErrorEvent *ev)
 {
     return 0;
 }
@@ -1621,20 +1621,20 @@ Handle_Prop_Requests (int argc, char **argv)
 }
 
 static void
-Remove_Property (Display *dpy, Window w, const char *propname)
+Remove_Property (Display *display, Window w, const char *propname)
 {
-    Atom id = XInternAtom (dpy, propname, True);
+    Atom id = XInternAtom (display, propname, True);
 
     if (id == None) {
 	fprintf (stderr, "%s:  no such property \"%s\"\n",
 		 program_name, propname);
 	return;
     }
-    XDeleteProperty (dpy, w, id);
+    XDeleteProperty (display, w, id);
 }
 
 static void
-Set_Property (Display *dpy, Window w, const char *propname, const char *value)
+Set_Property (Display *display, Window w, const char *propname, const char *value)
 {
     Atom atom;
     const char *format;
@@ -1666,7 +1666,7 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
       case 'u':
 	if (size != 8)
 	    Fatal_Error("can't use format character 'u' with any size except 8.");
-	type = XInternAtom(dpy, "UTF8_STRING", False);
+	type = XInternAtom(display, "UTF8_STRING", False);
 	data = (const unsigned char *) value;
 	nelements = strlen(value);
 	break;
@@ -1674,7 +1674,7 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	XTextProperty textprop;
 	if (size != 8)
 	    Fatal_Error("can't use format character 't' with any size except 8.");
-	if (XmbTextListToTextProperty(dpy, (char **) &value, 1,
+	if (XmbTextListToTextProperty(display, (char **) &value, 1,
 				      XStdICCTextStyle, &textprop) != Success) {
 	    fprintf(stderr, "cannot convert %s argument to STRING or COMPOUND_TEXT.\n", propname);
 	    return;
@@ -1804,7 +1804,7 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
 	Fatal_Error("bad format character: %c", format_char);
     }
 
-    XChangeProperty(dpy, target_win, atom, type, size, PropModeReplace,
+    XChangeProperty(display, target_win, atom, type, size, PropModeReplace,
 		    data, nelements);
 }
 
@@ -1917,9 +1917,9 @@ Parse_Format_Mapping (int *argc, char ***argv)
 
 static int spy = 0;
 
-static int (*old_error_handler)(Display *dpy, XErrorEvent *ev);
+static int (*old_error_handler)(Display *display, XErrorEvent *ev);
 
-static int spy_error_handler(Display *dpy, XErrorEvent *ev)
+static int spy_error_handler(Display *display, XErrorEvent *ev)
 {
     if (ev->error_code == BadWindow || ev->error_code == BadMatch) {
 	/* Window was destroyed */
@@ -1928,7 +1928,7 @@ static int spy_error_handler(Display *dpy, XErrorEvent *ev)
     }
 
     if (old_error_handler)
-	return old_error_handler(dpy, ev);
+	return old_error_handler(display, ev);
 
     return 0;
 }
