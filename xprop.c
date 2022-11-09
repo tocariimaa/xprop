@@ -145,7 +145,7 @@ static char *
 Read_Quoted (FILE *stream)
 {
     char *ptr;
-    int c, length;
+    int length;
 
     Read_White_Space(stream);
     if (Read_Char(stream)!='\'')
@@ -153,6 +153,8 @@ Read_Quoted (FILE *stream)
 
     ptr = _large_buffer; length = MAXSTR;
     for (;;) {
+	int c;
+
 	if (length < 0)
 	    Fatal_Error("Bad format file format: dformat too long.");
 	c = Read_Char(stream);
@@ -267,10 +269,8 @@ Apply_Default_Formats (const char **format, const char **dformat)
 static void
 Lookup_Formats (Atom atom, const char **format, const char **dformat)
 {
-    int i;
-
     if (_property_formats)
-	for (i = _property_formats->thunk_count-1; i >= 0; i--)
+	for (int i = _property_formats->thunk_count-1; i >= 0; i--) {
 	    if (_property_formats[i].value == (long) atom) {
 		if (!*format)
 		    *format = _property_formats[i].format;
@@ -278,6 +278,7 @@ Lookup_Formats (Atom atom, const char **format, const char **dformat)
 		    *dformat = _property_formats[i].dformat;
 		break;
 	    }
+	}
 }
 
 static void
@@ -534,11 +535,13 @@ Read_Mappings (FILE *stream)
 {
     char format_buffer[100];
     char name[1000];
-    const char *dformat, *format;
-    int count, c;
-    Atom atom;
+    int count;
 
     while ((count = fscanf(stream," %990s %90s ",name,format_buffer)) != EOF) {
+	const char *dformat, *format;
+	int c;
+	Atom atom;
+
 	if (count != 2)
 	    Fatal_Error("Bad format file format.");
 
@@ -780,7 +783,6 @@ Format_Icons (const unsigned long *icon, int len)
 	unsigned long width, height, display_width;
 	unsigned int icon_pixel_bytes;
 	unsigned int icon_line_bytes;
-	unsigned int w, h;
 	int offset;
 	
 	width = *icon++;
@@ -818,11 +820,11 @@ Format_Icons (const unsigned long *icon, int len)
 	    continue;
 	}
 	
-	for (h = 0; h < height; ++h)
+	for (unsigned int h = 0; h < height; ++h)
 	{
 	    tail += sprintf (tail, "\t");
 	    
-	    for (w = 0; w < width; ++w)
+	    for (unsigned int w = 0; w < width; ++w)
 	    {
 		unsigned char a, r, g, b;
 		unsigned long pixel = *icon++;
@@ -894,7 +896,7 @@ static const char *
 Format_Len_Text (const char *string, int len, Atom encoding)
 {
     XTextProperty textprop;
-    char **list, **start_list;
+    char **start_list;
     int count;
 
     /* Try to convert to local encoding. */
@@ -903,7 +905,7 @@ Format_Len_Text (const char *string, int len, Atom encoding)
     textprop.value = (unsigned char *) string;
     textprop.nitems = len;
     if (XmbTextPropertyToTextList(dpy, &textprop, &start_list, &count) == Success) {
-	list = start_list;
+	char **list = start_list;
 	_buf_ptr = _formatting_buffer;
 	_buf_len = MAXSTR;
 	*_buf_ptr++ = '"';
@@ -977,12 +979,10 @@ static int
 is_valid_utf8 (const char *string, int len)
 {
     unsigned long codepoint = 0;
-    int rem, i;
-    unsigned char c;
+    int rem = 0;
 
-    rem = 0;
-    for (i = 0; i < len; i++) {
-	c = (unsigned char) string[i];
+    for (int i = 0; i < len; i++) {
+	 unsigned char c = (unsigned char) string[i];
 
 	/* Order of type check:
 	 *   - Single byte code point
@@ -1024,12 +1024,12 @@ is_valid_utf8 (const char *string, int len)
 static const char *
 Format_Len_Unicode (const char *string, int len)
 {
-    char *data;
-    const char *result, *error;
-
     int validity = is_valid_utf8(string, len);
 
     if (validity != UTF8_VALID) {
+	char *data;
+	const char *result, *error;
+
 	switch (validity) {
 	  case UTF8_FORBIDDEN_VALUE:
 	    error = "<Invalid UTF-8 string: Forbidden value> "; break;
@@ -1147,9 +1147,7 @@ Format_Thunk_I (thunk *thunks, const char *format, int i)
 static long
 Mask_Word (thunk *thunks, const char *format)
 {
-    int j;
-
-    for (j = 0; j  < (int)strlen(format); j++)
+    for (int j = 0; j  < (int)strlen(format); j++)
 	if (Get_Format_Char(format, j) == 'm')
 	    return thunks[j].value;
     return 0;
@@ -1403,13 +1401,13 @@ Break_Down_Property (const char *pointer, int length, Atom type, const char *for
     thunk *thunks;
     thunk t = {0};
     int i;
-    char format_char;
 
     thunks = Create_Thunk_List();
     i = 0;
 
     while (length >= size/8) {
-	format_char = Get_Format_Char(format, i);
+	char format_char = Get_Format_Char(format, i);
+
 	if (format_char == 's' || format_char == 'u')
 	    t.value = Extract_Len_String(&pointer,&length,size,&t.extra_value);
 	else if (format_char == 't') {
@@ -1447,11 +1445,9 @@ static const char *
 Get_Font_Property_Data_And_Type (Atom atom,
                                  long *length, Atom *type, int *size)
 {
-    int i;
-	
     *type = None;
 	
-    for (i = 0; i < font->n_properties; i++)
+    for (int i = 0; i < font->n_properties; i++)
 	if (atom == font->properties[i].name) {
 	    _font_prop = font->properties[i].card32;
 	    *length = sizeof(long);
@@ -1559,23 +1555,21 @@ Show_Prop (const char *format, const char *dformat, const char *prop)
 static void
 Show_All_Props (void)
 {
-    Atom *atoms, atom;
-    const char *name;
-    int count, i;
-
     if (target_win != (Window) -1) {
-	atoms = XListProperties(dpy, target_win, &count);
-	for (i = 0; i < count; i++) {
-	    name = Format_Atom(atoms[i]);
+	int count;
+	Atom *atoms = XListProperties(dpy, target_win, &count);
+	for (int i = 0; i < count; i++) {
+	    const char *name = Format_Atom(atoms[i]);
 	    Show_Prop(NULL, NULL, name);
 	}
 	XFree(atoms);
-    } else
-	for (i = 0; i < font->n_properties; i++) {
-	    atom = font->properties[i].name;
-	    name = Format_Atom(atom);
+    } else {
+	for (int i = 0; i < font->n_properties; i++) {
+	    Atom atom = font->properties[i].name;
+	    const char *name = Format_Atom(atom);
 	    Show_Prop(NULL, NULL, name);
 	}
+    }
 }
 
 static thunk *
