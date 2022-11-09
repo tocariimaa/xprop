@@ -1814,7 +1814,7 @@ Set_Property (Display *dpy, Window w, const char *propname, const char *value)
  *
  */
 
-void
+static void
 print_help (void)
 {
     static const char *help_message =
@@ -1845,7 +1845,7 @@ print_help (void)
     fprintf (stderr, "%s\n", help_message);
 }
 
-void _X_NORETURN _X_COLD
+static inline void _X_NORETURN _X_COLD
 help (void)
 {
 	print_help();
