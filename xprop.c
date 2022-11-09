@@ -66,7 +66,7 @@ from The Open Group.
 /* isprint() in "C" locale */
 #define c_isprint(c) ((c) >= 0x20 && (c) < 0x7f)
 
-static int term_width = 144 + 8;
+static unsigned int term_width = 144 + 8;
 
 /*
  *
@@ -271,7 +271,7 @@ Lookup_Formats (Atom atom, const char **format, const char **dformat)
 
     if (_property_formats)
 	for (i = _property_formats->thunk_count-1; i >= 0; i--)
-	    if (_property_formats[i].value == atom) {
+	    if (_property_formats[i].value == (long) atom) {
 		if (!*format)
 		    *format = _property_formats[i].format;
 		if (!*dformat)
@@ -618,7 +618,7 @@ Format_Atom (Atom atom)
 	snprintf(_formatting_buffer, sizeof(_formatting_buffer),
 		 "undefined atom # 0x%lx", atom);
     else {
-	int namelen = strlen(name);
+	size_t namelen = strlen(name);
 	if (namelen > MAXSTR) namelen = MAXSTR;
 	memcpy(_formatting_buffer, name, namelen);
 	_formatting_buffer[namelen] = '\0';
@@ -630,7 +630,7 @@ Format_Atom (Atom atom)
 static const char *
 Format_Mask_Word (long wrd)
 {
-    long bit_mask, bit;
+    unsigned long bit_mask, bit;
     int seen = 0;
 
     strcpy(_formatting_buffer, "{MASK: ");
@@ -780,7 +780,7 @@ Format_Icons (const unsigned long *icon, int len)
 	unsigned long width, height, display_width;
 	unsigned int icon_pixel_bytes;
 	unsigned int icon_line_bytes;
-	int w, h;
+	unsigned int w, h;
 	int offset;
 	
 	width = *icon++;
@@ -1508,7 +1508,7 @@ Get_Window_Property_Data_And_Type (Atom atom,
 static const char *
 Get_Property_Data_And_Type (Atom atom, long *length, Atom *type, int *size)
 {
-    if (target_win == -1)
+    if (target_win == (Window) -1)
 	return Get_Font_Property_Data_And_Type(atom, length, type, size);
     else
 	return Get_Window_Property_Data_And_Type(atom, length, type, size);
@@ -1563,7 +1563,7 @@ Show_All_Props (void)
     const char *name;
     int count, i;
 
-    if (target_win != -1) {
+    if (target_win != (Window) -1) {
 	atoms = XListProperties(dpy, target_win, &count);
 	for (i = 0; i < count; i++) {
 	    name = Format_Atom(atoms[i]);
@@ -2014,7 +2014,7 @@ main (int argc, char **argv)
 	if (!strcmp(argv[0], "-font")) {
 	    if (++argv, --argc == 0) usage("-font requires an argument");
 	    font = Open_Font(argv[0]);
-	    target_win = -1;
+	    target_win = (Window) -1;
 	    continue;
 	}
 	if (!strcmp(argv[0], "-remove")) {
@@ -2064,7 +2064,7 @@ main (int argc, char **argv)
     if (remove_props != NULL) {
 	int count;
 
-	if (target_win == -1)
+	if (target_win == (Window) -1)
 	    Fatal_Error("-remove works only on windows, not fonts");
 
 	count = remove_props->thunk_count;
@@ -2075,7 +2075,7 @@ main (int argc, char **argv)
     if (set_props != NULL) {
 	int count;
 
-	if (target_win == -1)
+	if (target_win == (Window) -1)
 	    Fatal_Error("-set works only on windows, not fonts");
 
 	count = set_props->thunk_count;
@@ -2091,7 +2091,7 @@ main (int argc, char **argv)
 
     props = Handle_Prop_Requests(argc, argv);
 
-    if (spy && target_win != -1) {
+    if (spy && target_win != (Window) -1) {
 	XEvent event;
 	const char *format, *dformat;
 	
@@ -2108,7 +2108,7 @@ main (int argc, char **argv)
 	    if (props) {
 		int i;
 		for (i = 0; i < props->thunk_count; i++)
-		    if (props[i].value == event.xproperty.atom)
+		    if (props[i].value == (long) event.xproperty.atom)
 			break;
 		if (i >= props->thunk_count)
 		    continue;
