@@ -1845,12 +1845,14 @@ print_help (void)
     fprintf (stderr, "%s\n", help_message);
 }
 
-void help (void) {
+void _X_NORETURN _X_COLD
+help (void)
+{
 	print_help();
 	exit(0);
 }
 
-void
+void _X_NORETURN _X_COLD
 usage (const char *errmsg)
 {
     if (errmsg != NULL)
@@ -1860,7 +1862,7 @@ usage (const char *errmsg)
     exit (1);
 }
 
-static void
+static void _X_NORETURN _X_COLD
 grammar (void)
 {
     printf ("Grammar for xprop:\n\n");
