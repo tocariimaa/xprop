@@ -1962,6 +1962,27 @@ main (int argc, char **argv)
     /* Set locale for XmbTextProptertyToTextList and iswprint(). */
     setlocale(LC_CTYPE, "");
 
+    /* Handle args that don't require opening a display */
+    for (int a = 1; a < argc; a++) {
+	const char *argn = argv[a];
+	/* accept single or double dash for -help & -version */
+	if (argn[0] == '-' && argn[1] == '-') {
+	    argn++;
+	}
+	if (!strcmp(argv[a], "-grammar")) {
+	    grammar ();
+	    /* NOTREACHED */
+	}
+	if (!strcmp(argn, "-help")) {
+	    help ();
+	    /* NOTREACHED */
+	}
+	if (!strcmp(argn, "-version")) {
+	    puts(PACKAGE_STRING);
+	    exit(EXIT_SUCCESS);
+	}
+    }
+
     /* Handle display name, opening the display */
     Setup_Display_And_Screen(&argc, argv);
 
@@ -1987,14 +2008,6 @@ main (int argc, char **argv)
     while (argv++, --argc>0 && **argv == '-') {
 	if (!strcmp(argv[0], "-"))
 	    continue;
-	if (!strcmp(argv[0], "-help")) {
-	    help ();
-	    /* NOTREACHED */
-	}
-	if (!strcmp(argv[0], "-grammar")) {
-	    grammar ();
-	    /* NOTREACHED */
-	}
 	if (!strcmp(argv[0], "-notype")) {
 	    notype = 1;
 	    continue;
@@ -2047,10 +2060,6 @@ main (int argc, char **argv)
 	if (!strcmp(argv[0], "-f") || !strcmp(argv[0], "-format")) {
 	    Parse_Format_Mapping(&argc, &argv);
 	    continue;
-	}
-	if (!strcmp(argv[0], "-version")) {
-	    puts(PACKAGE_STRING);
-	    exit(0);
 	}
 	fprintf (stderr, "%s: unrecognized argument %s\n\n",
 		 program_name, argv[0]);
