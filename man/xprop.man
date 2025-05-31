@@ -44,7 +44,7 @@
 .\" FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 .\" DEALINGS IN THE SOFTWARE.
 .\"
-.TH XPROP 1 __vendorversion__
+.TH XPROP 1 2025-04-06 __vendorversion__
 .SH NAME
 xprop - property displayer for X
 .SH SYNOPSIS
@@ -53,7 +53,7 @@ xprop - property displayer for X
 .I id
 .RB "| " \-name
 .I name
-.RB" | " \-root
+.RB "| " \-root
 .RB "| " \-font
 .I font
 .RB "| " \-frame ]
@@ -68,18 +68,17 @@ xprop - property displayer for X
 .br
 .RB "      [" \-remove
 .IR property-name ]
-.RB [-set
+.RB [ \-set
 .IR property-name " " value ]
 .RB [ \-spy ]
 .br
 .RB "      [" \-f
 .IR atom " " format " [" format ]]*
 .RI [ format " [" dformat "] " atom ]*
-
+.sp
 .B "xprop"
 .BR \-help " | " \-grammar  " | " \-version
 .SH SUMMARY
-.PP
 The
 .B xprop
 utility is for displaying window and font properties in an X server.
@@ -87,8 +86,6 @@ One window or font is selected using the command line arguments
 or possibly in the case of a window, by clicking on the desired window.
 A list of properties is then given, possibly with formatting information.
 .SH OPTIONS
-.PP
-.PP
 .TP 8
 .B "\-id \fIid\fP"
 This argument allows the user to select window \fIid\fP on the
@@ -96,81 +93,65 @@ command line rather than using the pointer to select the target window.
 This is very useful in debugging X applications where the target
 window is not mapped to the screen or where the use of the pointer might
 be impossible or interfere with the application.
-.PP
 .TP 8
 .B "\-name \fIname\fP"
 This argument allows the user to specify that the window named \fIname\fP
 is the target window on the command line rather than using the pointer to
 select the target window.
-.PP
 .TP 8
 .B "\-font \fIfont\fP"
 This argument allows the user to specify that the properties of font
 \fIfont\fP should be displayed.
-.PP
 .TP 8
 .B "\-root"
 This argument specifies that X's root window is the target window.
 This is useful in situations where the root window is completely
 obscured.
-.PP
 .TP 8
 .B "\-frame"
 Specifies that when selecting a window by hand (i.e. if none of \fB\-name\fP,
 \fB\-root\fP, or \fB\-id\fP are given), look at the window manager frame (if
 any) instead of looking for the client window.
-.PP
 .TP 8
 .B "\-display \fIdisplay\fP"
 This argument allows you to specify the server to connect to; see
 .BR X (__miscmansuffix__).
-.PP
 .TP 8
 .B "\-len \fIn\fP"
 Specifies that at most \fIn\fP bytes of any property should be read or
 displayed.
-.PP
 .TP 8
 .B "\-notype"
 Specifies that the type of each property should not be displayed.
-.PP
 .TP 8
 .B "\-fs \fIfile\fP"
 Specifies that file \fIfile\fP should be used as a source of more formats
 for properties.
-.PP
 .TP 8
 .B "\-remove \fIproperty-name\fP"
 Specifies the name of a property to be removed from the indicated window.
-.PP
 .TP 8
 .B "\-set \fIproperty-name\fP \fIvalue\fP"
 Specifies the name of a property and a property value, to be set on the
 indicated window.
-.PP
 .TP 8
 .B "\-spy"
 Examine window properties forever, looking for property change events.
-.PP
 .TP 8
 .B "\-f \fIname\fP \fIformat\fP [\fIdformat\fP]"
 Specifies that the \fIformat\fP for \fIname\fP should be \fIformat\fP and that
 the \fIdformat\fP for \fIname\fP should be \fIdformat\fP.
 If \fIdformat\fP is missing, " = $0+\\n" is assumed.
-.PP
 .TP 8
 .B "\-help"
 Print out a summary of command line options.
-.PP
 .TP 8
 .B "\-grammar"
 Print out a detailed grammar for all command line options.
-.PP
 .TP 8
 .B "\-version"
 Print program version information and exit.
 .SH DESCRIPTION
-.PP
 For each of these properties, its value on the selected window
 or font is printed using the supplied formatting information if any.
 If no formatting information is supplied, internal defaults are used.
@@ -192,8 +173,8 @@ ither decimal or hex (must start with 0x),
 while the \fB\-name\fP argument selects a window by name.
 .PP
 The last way to select a window does not involve the command line at all.
-If none of \fB\-font\fP, \fB\-id\fP, \fB\-name\fP, or \fB\-root\fP are specified,
-a crosshairs cursor is displayed
+If none of \fB\-font\fP, \fB\-id\fP, \fB\-name\fP, or \fB\-root\fP
+are specified, a crosshairs cursor is displayed
 and the user is allowed to choose any visible window by pressing
 any pointer button in the desired window.
 If the \fB\-frame\fP argument is specified,
@@ -371,7 +352,8 @@ The syntax of
 \fIterm\fP
 ::= \fIn\fP | $\fIn\fP | m\fIn\fP
 .PP
-The ! operator is a logical ``not'', changing 0 to 1 and any non-zero value to 0.
+The ! operator is a logical ``not'',
+changing 0 to 1 and any non-zero value to 0.
 = is an equality operator.
 Note that internally all expressions are evaluated
 as 32 bit numbers so -1 is not equal to 65535.
@@ -414,7 +396,6 @@ Where \fIname\fP is either the name of a property or the name of a type,
 \fIdformat\fP is the \fIdformat\fP to be used with \fIname\fP.
 If \fIdformat\fP is not present, " = $0+\\n" is assumed.
 .SH EXAMPLES
-.PP
 To display the name of the root window:
 .B xprop -root WM_NAME\
 .PP
@@ -433,14 +414,12 @@ To display all the properties of window # 0x200007:
 To set a simple string property:
 \fBxprop -root -format MY_ATOM_NAME 8s -set MY_ATOM_NAME "my_value"\fP
 .SH ENVIRONMENT
-.PP
 .TP 8
 .B DISPLAY
 To get default display.
 .TP 8
 .B XPROPFORMATS
 Specifies the name of a file from which additional formats are to be obtained.
-.PP
 .SH SEE ALSO
 .BR X (__miscmansuffix__),
 .BR xdpyinfo (__appmansuffix__),
