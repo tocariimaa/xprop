@@ -1639,6 +1639,36 @@ Remove_Property (Display *display, Window w, const char *propname)
     XDeleteProperty (display, w, id);
 }
 
+static int
+Parse_Atom_List(const char *value, Atom *type, unsigned long *atoms)
+{
+	int i = 0;
+	char *value2 = strdup(value);
+	char *p = strtok(value2, ",");
+
+	while (p != NULL) {
+		char *atom_s = p;
+		char *atom_s_end = p + strlen(p) - 1;
+		/* strip preceding whitespace */
+		while (*atom_s != '\0' && isspace(*atom_s))
+			atom_s++;
+		/* strip trailling whitespace */
+		while (atom_s_end >= atom_s && isspace(*atom_s_end))
+			--atom_s_end;
+		*(atom_s_end + 1) = '\0';
+
+		atoms[i++] = Parse_Atom(atom_s, False);
+		if (i > MAXELEMENTS) /* ignore the rest */
+			break;
+
+		p = strtok(NULL, ",");
+	}
+
+	free(value2);
+	*type = XA_ATOM;
+	return i;
+}
+
 static void
 Set_Property (Display *display, Window w, const char *propname, const char *value)
 {
@@ -1797,11 +1827,9 @@ Set_Property (Display *display, Window w, const char *propname, const char *valu
 	break;
       }
       case 'a': {
-	static Atom avalue;
-	avalue = Parse_Atom(value, False);
-	type = XA_ATOM;
-	data = (const unsigned char *) &avalue;
-	nelements = 1;
+		static unsigned long data32[MAXELEMENTS];
+		nelements = Parse_Atom_List(value, &type, data32);
+		data = (unsigned char *)data32;
 	break;
       }
       case 'm':
