@@ -33,6 +33,7 @@ from The Open Group.
 #include <X11/Xos.h>
 #include <X11/Xfuncs.h>
 #include <X11/Xutil.h>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
 #include <stdio.h>
