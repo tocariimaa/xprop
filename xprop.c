@@ -1640,7 +1640,7 @@ Remove_Property (Display *display, Window w, const char *propname)
 }
 
 static int
-Parse_Atom_List(const char *value, unsigned long *atoms)
+Parse_Atom_List(const char *value, unsigned long *atoms, int atom_s_len)
 {
 	int i = 0;
 	char *value2 = strdup(value);
@@ -1658,7 +1658,7 @@ Parse_Atom_List(const char *value, unsigned long *atoms)
 		*(atom_s_end + 1) = '\0';
 
 		atoms[i++] = Parse_Atom(atom_s, False);
-		if (i > MAXELEMENTS) /* ignore the rest */
+		if (i > atom_s_len) /* ignore the rest */
 			break;
 
 		p = strtok(NULL, ",");
@@ -1827,7 +1827,7 @@ Set_Property (Display *display, Window w, const char *propname, const char *valu
       }
       case 'a': {
 		static unsigned long data32[MAXELEMENTS];
-		nelements = Parse_Atom_List(value, data32);
+		nelements = Parse_Atom_List(value, data32, MAXELEMENTS);
 		type = XA_ATOM;
 		data = (unsigned char *)data32;
 	break;
