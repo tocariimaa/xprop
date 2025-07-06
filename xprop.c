@@ -36,9 +36,7 @@ from The Open Group.
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#ifdef HAVE_WCHAR_H
 #include <wchar.h>
-#endif
 #ifdef HAVE_WCTYPE_H
 #include <wctype.h>
 #endif
