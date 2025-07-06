@@ -37,16 +37,10 @@ from The Open Group.
 #include <stdio.h>
 #include <ctype.h>
 #include <wchar.h>
-#ifdef HAVE_WCTYPE_H
 #include <wctype.h>
-#endif
 #include <locale.h>
 #ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
-#endif
-
-#ifndef HAVE_WCTYPE_H
-#define iswprint(x) isprint(x)
 #endif
 
 #include <X11/Xatom.h>
