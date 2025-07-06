@@ -44,7 +44,7 @@
 .\" FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 .\" DEALINGS IN THE SOFTWARE.
 .\"
-.TH XPROP 1 2025-04-06 __vendorversion__
+.TH XPROP 1 __vendorversion__
 .SH NAME
 xprop - property displayer for X
 .SH SYNOPSIS
