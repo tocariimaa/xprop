@@ -27,8 +27,6 @@ from The Open Group.
 
 */
 
-#include "config.h"
-
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 #include <X11/Xfuncs.h>
