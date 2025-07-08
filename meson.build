@@ -17,6 +17,10 @@ foreach fn : funcs_to_check
   endif
 endforeach
 
+if cc.has_header('langinfo.h')
+  add_project_arguments('-DHAVE_LANGINFO_H', language: 'c')
+endif
+
 add_project_arguments(
   '-D_DEFAULT_SOURCE', '-D_XOPEN_SOURCE=700L', f'-DPACKAGE_STRING="@package_string@"',
   language: 'c'
