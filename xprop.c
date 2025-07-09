@@ -779,13 +779,11 @@ Format_Icons(const unsigned long *icon, int len)
 {
     static char *result = NULL;
     char *tail = NULL;
-    int alloced;
+    size_t alloced = 0;
     const unsigned long *end = icon + (len / sizeof(unsigned long));
 
     free(result);
     result = NULL;
-
-    alloced = 0;
 
     while (icon < end) {
         unsigned long width, height, display_width, display_height;
