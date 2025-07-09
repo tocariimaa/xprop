@@ -1526,7 +1526,7 @@ Get_Window_Property_Data_And_Type(Atom atom, long *length, Atom *type,
         nbytes = 0;
     else
         abort();
-    *length = min(nitems * nbytes, max_len);
+    *length = min(nitems * nbytes, (unsigned long)max_len);
     *type = actual_type;
     *size = actual_format;
     return (const char *)prop;
