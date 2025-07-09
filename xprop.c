@@ -54,6 +54,8 @@ from The Open Group.
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
+#define ARRLEN(arr) (sizeof(arr) / sizeof(*(arr)))
+
 /* isprint() in "C" locale */
 #define c_isprint(c) ((c) >= 0x20 && (c) < 0x7f)
 
