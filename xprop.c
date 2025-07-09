@@ -1134,8 +1134,7 @@ Get_Format_Char(const char *format, int i)
 static const char *
 Format_Thunk(thunk t, char format_char)
 {
-    long value;
-    value = t.value;
+    long value = t.value;
 
     switch (format_char) {
     case 's':
