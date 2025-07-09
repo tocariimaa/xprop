@@ -607,6 +607,7 @@ Format_Signed(long wrd)
 static int
 ignore_errors(Display *display, XErrorEvent *ev)
 {
+    (void)display, (void)ev;
     return 0;
 }
 
@@ -1706,6 +1707,7 @@ Set_Property(Display *display, Window w, const char *propname,
     const unsigned char *data = NULL;
     int nelements = 0;
 
+    (void)w;
     atom = Parse_Atom(propname, False);
 
     format = dformat = NULL;
