@@ -780,7 +780,7 @@ Format_Icons(const unsigned long *icon, int len)
     static char *result = NULL;
     char *tail = NULL;
     int alloced;
-    const unsigned long *end = icon + len / sizeof(unsigned long);
+    const unsigned long *end = icon + (len / sizeof(unsigned long));
 
     free(result);
     result = NULL;
