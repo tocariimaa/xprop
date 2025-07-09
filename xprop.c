@@ -877,7 +877,7 @@ Format_Icons(const unsigned long *icon, int len)
                     int idx;
 
                     idx = (brightness
-                           * ((sizeof(palette) / sizeof(palette[0])) - 1))
+                           * (ARRLEN(palette) - 1))
                           / 1000;
 
                     tail += sprintf(tail, "%s%s", palette[idx], palette[idx]);
