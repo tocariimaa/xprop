@@ -30,7 +30,7 @@ static Atom atom_wm_state = None;
  * Check if window has given property
  */
 static Bool
-Window_Has_Property(Display * dpy, Window win, Atom atom)
+Window_Has_Property(Display *dpy, Window win, Atom atom)
 {
     Atom type_ret;
     int format_ret;
@@ -39,9 +39,8 @@ Window_Has_Property(Display * dpy, Window win, Atom atom)
 
     type_ret = None;
     prop_ret = NULL;
-    XGetWindowProperty(dpy, win, atom, 0, 0, False, AnyPropertyType,
-                       &type_ret, &format_ret, &num_ret,
-                       &bytes_after, &prop_ret);
+    XGetWindowProperty(dpy, win, atom, 0, 0, False, AnyPropertyType, &type_ret,
+                       &format_ret, &num_ret, &bytes_after, &prop_ret);
     if (prop_ret)
         XFree(prop_ret);
 
@@ -52,7 +51,7 @@ Window_Has_Property(Display * dpy, Window win, Atom atom)
  * Check if window is viewable
  */
 static Bool
-Window_Is_Viewable(Display * dpy, Window win)
+Window_Is_Viewable(Display *dpy, Window win)
 {
     Bool ok;
     XWindowAttributes xwa;
@@ -71,7 +70,7 @@ Window_Is_Viewable(Display * dpy, Window win)
  * The first matching window is returned, None if no match is found.
  */
 static Window
-Find_Client_In_Children(Display * dpy, Window win)
+Find_Client_In_Children(Display *dpy, Window win)
 {
     Window root, parent;
     Window *children;
@@ -85,7 +84,7 @@ Find_Client_In_Children(Display * dpy, Window win)
 
     /* Check each child for WM_STATE and other validity */
     win = None;
-    for (i = (int) n_children - 1; i >= 0; i--) {
+    for (i = (int)n_children - 1; i >= 0; i--) {
         if (!Window_Is_Viewable(dpy, children[i])) {
             children[i] = None; /* Don't bother descending into this one */
             continue;
@@ -99,7 +98,7 @@ Find_Client_In_Children(Display * dpy, Window win)
     }
 
     /* No children matched, now descend into each child */
-    for (i = (int) n_children - 1; i >= 0; i--) {
+    for (i = (int)n_children - 1; i >= 0; i--) {
         if (children[i] == None)
             continue;
         win = Find_Client_In_Children(dpy, children[i]);
@@ -107,7 +106,7 @@ Find_Client_In_Children(Display * dpy, Window win)
             break;
     }
 
-  done:
+done:
     XFree(children);
 
     return win;
@@ -117,7 +116,7 @@ Find_Client_In_Children(Display * dpy, Window win)
  * Find virtual roots (_NET_VIRTUAL_ROOTS)
  */
 static unsigned long *
-Find_Roots(Display * dpy, Window root, unsigned int *num)
+Find_Roots(Display *dpy, Window root, unsigned int *num)
 {
     Atom type_ret;
     int format_ret;
@@ -132,14 +131,15 @@ Find_Roots(Display * dpy, Window root, unsigned int *num)
 
     type_ret = None;
     prop_ret = NULL;
-    if (XGetWindowProperty(dpy, root, atom, 0, 0x7fffffff, False,
-                           XA_WINDOW, &type_ret, &format_ret, &num_ret,
-                           &bytes_after, &prop_ret) != Success)
+    if (XGetWindowProperty(dpy, root, atom, 0, 0x7fffffff, False, XA_WINDOW,
+                           &type_ret, &format_ret, &num_ret, &bytes_after,
+                           &prop_ret)
+        != Success)
         return NULL;
 
     if (prop_ret && type_ret == XA_WINDOW && format_ret == 32) {
         *num = num_ret;
-        return ((unsigned long *) prop_ret);
+        return ((unsigned long *)prop_ret);
     }
     if (prop_ret)
         XFree(prop_ret);
@@ -151,14 +151,14 @@ Find_Roots(Display * dpy, Window root, unsigned int *num)
  * Find child window at pointer location
  */
 static Window
-Find_Child_At_Pointer(Display * dpy, Window win)
+Find_Child_At_Pointer(Display *dpy, Window win)
 {
     Window root_return, child_return;
     int dummyi;
     unsigned int dummyu;
 
-    XQueryPointer(dpy, win, &root_return, &child_return,
-                  &dummyi, &dummyi, &dummyi, &dummyi, &dummyu);
+    XQueryPointer(dpy, win, &root_return, &child_return, &dummyi, &dummyi,
+                  &dummyi, &dummyi, &dummyu);
 
     return child_return;
 }
@@ -176,7 +176,7 @@ Find_Child_At_Pointer(Display * dpy, Window win)
  * root.
  */
 Window
-Find_Client(Display * dpy, Window root, Window subwin)
+Find_Client(Display *dpy, Window root, Window subwin)
 {
     unsigned long *roots;
     unsigned int i, n_roots;
@@ -189,7 +189,7 @@ Find_Client(Display * dpy, Window root, Window subwin)
             continue;
         win = Find_Child_At_Pointer(dpy, subwin);
         if (win == None)
-            return subwin;      /* No child - Return virtual root. */
+            return subwin; /* No child - Return virtual root. */
         subwin = win;
         break;
     }
@@ -209,7 +209,7 @@ Find_Client(Display * dpy, Window root, Window subwin)
     /* Attempt to find a client window in subwin's children */
     win = Find_Client_In_Children(dpy, subwin);
     if (win != None)
-        return win;             /* Found a client */
+        return win; /* Found a client */
 
     /* Did not find a client */
     return subwin;
