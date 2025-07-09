@@ -819,7 +819,7 @@ Format_Icons(const unsigned long *icon, int len)
             Fatal_Error("Out of memory!");
         tail = &result[offset];
 
-        if (end - icon < width * height)
+        if ((unsigned long)(end - icon) < width * height)
             break;
 
         tail += sprintf(tail, "\tIcon (%lu x %lu):\n", width, height);
