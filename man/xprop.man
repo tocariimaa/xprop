@@ -418,6 +418,9 @@ To set a simple string property:
 .B DISPLAY
 To get default display.
 .TP 8
+.B COLORTERM
+If this is set to 'truecolor', \fBxprop\fP will print the icon in true (24 bit) color.
+.TP 8
 .B XPROPFORMATS
 Specifies the name of a file from which additional formats are to be obtained.
 .SH SEE ALSO
